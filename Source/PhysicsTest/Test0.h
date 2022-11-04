@@ -15,9 +15,21 @@ public:
 	// Sets default values for this actor's properties
 	ATest0();
 
-	// Expects seconds and returns the number of 0.036s substeps
+	/*
+		Returns the number of substeps of a given length within n seconds.
+		@param seconds.
+		@return number of substeps.
+	*/
 	UFUNCTION(BlueprintCallable)
 		int getSubsteps(float total_seconds);
+
+	/*
+		Returns the force based on given mass and acceleration.
+		@param mass (in kg) and acceleration (in cm/s).
+		@return force in centinewtons.
+	*/
+	UFUNCTION(BlueprintCallable)
+		float calculateForce(float _mass, float _acceleration);
 
 protected:
 	// Called when the game starts or when spawned
