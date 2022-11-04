@@ -12,13 +12,13 @@ ATest0::ATest0()
 
 }
 
-// Expects seconds and returns the number (int) of 0.036s substeps
+// Expects seconds and returns the number of 0.036s substeps
 int ATest0::getSubsteps(float total_seconds)
 {
 	// this numer should be either the tick rate or delta seconds
 	float substeps_length = 0.036;
 
-	// Calculates the number of substeps, however, it contains decimal values
+	// Calculates the number of substeps, however, it contains decimal values that need to be substracted
 	float n_substeps = total_seconds / substeps_length;
 	UE_LOG(LogTemp, Warning, TEXT("N substeps before modulus: %f"), n_substeps);
 
@@ -27,12 +27,18 @@ int ATest0::getSubsteps(float total_seconds)
 	UE_LOG(LogTemp, Warning, TEXT("Remainder: %f"), remainder);
 
 	int total_substeps = n_substeps - remainder;
-	
+
 	UE_LOG(LogTemp, Warning, TEXT("Total substeps without decimal values %f"), total_substeps);
 
 	return total_substeps;
 }
 
+// Calculates force. 1 unit is equivalent to 1 centinewton
+float ATest0::calculateForce(float _mass, float _acceleration)
+{
+	float force = _mass * _acceleration;
+	return force;
+}
 // Called when the game starts or when spawned
 void ATest0::BeginPlay()
 {
