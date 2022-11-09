@@ -25,29 +25,41 @@ ATest0::ATest0()
 	Mesh->SetupAttachment(RootComponent);
 
 
-
+	index = 0;
+	array_finished = false;
 
 }
 
-// Expects seconds and returns the number of 0.036s substeps
+void ATest0::setFPS(float _fps)
+{
+	fps = _fps;
+}
+
+float ATest0::getFPS()
+{
+	return fps;
+}
+
+void ATest0::change_is_fps_set()
+{
+	is_fps_set = true;
+}
+
+// Expects seconds and returns the number of substeps based on fps
 int ATest0::getSubsteps(float total_seconds)
 {
 	// this numer should be either the tick rate or delta seconds
-	float substeps_length = 0.036;
+	float substeps_length = 1.0 / getFPS();
 
+	UE_LOG(LogTemp, Warning, TEXT("Substeps length: %f"), substeps_length);
 	// Calculates the number of substeps, however, it contains decimal values that need to be substracted
 	float n_substeps = total_seconds / substeps_length;
-
-	//UE_LOG(LogTemp, Warning, TEXT("N substeps before modulus: %f"), n_substeps);
 
 	// Substracting the decimal values from n_substeps so we can convert to int without truncating or rounding
 	float remainder = fmod(n_substeps, 1);
 
-	//UE_LOG(LogTemp, Warning, TEXT("Remainder: %f"), remainder);
 
 	int total_substeps = n_substeps - remainder;
-
-	//UE_LOG(LogTemp, Warning, TEXT("Total substeps without decimal values %f"), total_substeps);
 
 	return total_substeps;
 }
@@ -81,44 +93,46 @@ TArray<FVector> ATest0::setAccelerationOverTime(float _acceleration, float _seco
 	// Calculate the length of our array (how many substeps we need)
 	int substeps = getSubsteps(_seconds);
 	TArray<FVector>myArray;
-	float n = 0.036;
+	float n = 0.0083333333;
 
-	for (int i = 0; i < 2; i++) {
-
+	for (int i = 0; i < substeps; i++) {
+		//UE_LOG(LogTemp, Warning, TEXT("N value is : %f"), n);
 		// getting actor current position 
 		FVector currentLocation = ATest0::GetActorLocation();
 
 		// getting actor Forward Vector
 		FVector forwardV = ATest0::GetActorForwardVector();
 
-		//FVector normalizedForwardV = forwardV.operator- currentLocation;
-
 		// Getting vector values and applying acceleration
 		float xValue = GetActorForwardVector().X;
 		//UE_LOG(LogTemp, Warning, TEXT("X Value: %f"), xValue);
 
-		float new_x = (1 / 2) * _acceleration * xValue * pow(n, 2);
+		float new_x = (1.0 / 2.0) * _acceleration * xValue * pow(n, 2);
 
 
 		float yValue = GetActorForwardVector().Y;
-		float new_y = (1 / 2) * _acceleration * yValue * pow(n, 2);
+		//UE_LOG(LogTemp, Warning, TEXT("Y Value: %f"), yValue);
+
+
+		float new_y = (1.0 / 2.0) * _acceleration * yValue * pow(n, 2);
+		//UE_LOG(LogTemp, Warning, TEXT("New Y Value: %f"), new_y);
+
 
 		float zValue = GetActorForwardVector().Z;
-		float new_z = (1 / 2) * _acceleration * zValue * pow(n, 2);
+		float new_z = (1.0 / 2.0) * _acceleration * zValue * pow(n, 2);
 
 
 		FVector newLocation = FVector(new_x, new_y, new_z);
+		myArray.Add(newLocation);
 
-		//SetActorLocation(newLocation);
 
-		UE_LOG(LogTemp, Warning, TEXT("After applying acceleration, X: %f"), new_x);
-		UE_LOG(LogTemp, Warning, TEXT("After applying acceleration, y: %f"), new_y);
-		UE_LOG(LogTemp, Warning, TEXT("After applying acceleration, z: %f"), new_z);
+		//UE_LOG(LogTemp, Warning, TEXT("After applying acceleration, X: %f"), new_x);
+		//UE_LOG(LogTemp, Warning, TEXT("After applying acceleration, y: %f"), new_y);
+		//UE_LOG(LogTemp, Warning, TEXT("After applying acceleration, z: %f"), new_z);
 
-		// calculating position after substep
-		//FVector newPosition = (1 / 2) * _acceleration;
 
-		n += n;
+		n += .0083333333;
+		//UE_LOG(LogTemp, Warning, TEXT("N value is : %f"), n);
 	}
 
 	return myArray;
@@ -130,19 +144,26 @@ void ATest0::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//testing getSubsteps function
-	float seconds = 4.0;
+	if (is_fps_set == true) 
+	{
+		//testing getSubsteps function
+		float seconds = 4.0;
 
-	int loop_length = getSubsteps(seconds);
+		int loop_length = getSubsteps(seconds);
 
-	UE_LOG(LogTemp, Warning, TEXT("Amount of substeps: %d"), loop_length);
+		UE_LOG(LogTemp, Warning, TEXT("Amount of substeps: %d"), loop_length);
 
-	// Testing acceleration function
-	float my_acceleration = calculateAcceleration(mass, force);
+		// Testing acceleration function
+		float my_acceleration = calculateAcceleration(mass, force);
 
-	UE_LOG(LogTemp, Warning, TEXT("Acceleration: %f cm/s^2"), my_acceleration);
+		UE_LOG(LogTemp, Warning, TEXT("Acceleration: %f cm/s^2"), my_acceleration);
 
-	setAccelerationOverTime(my_acceleration, seconds);
+		all_locations = setAccelerationOverTime(my_acceleration, seconds);
+		array_finished = true;
+	}
+	
+
+	
 	
 }
 
@@ -150,7 +171,35 @@ void ATest0::BeginPlay()
 void ATest0::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	// The first thing is we need to make sure the fps value has been set
+	if (is_fps_set == false)
+	{
+		float temp_fps = 1.0f / DeltaTime;
+		
 
+		// Substracting the decimal values from n_substeps so we can convert to int without truncating or rounding
+		float remainder = fmod(temp_fps, 1);
+
+
+		int new_fps = temp_fps - remainder;
+
+		setFPS(new_fps);
+		is_fps_set = true;
+
+		UE_LOG(LogTemp, Warning, TEXT("FPS: %d /s"), new_fps);
+	}
+
+
+	
+
+	if (array_finished == true && index < all_locations.Num())
+	{
+		FVector temp_vector = all_locations[index];
+		SetActorLocation(temp_vector);
+		index += 1;
+	}
+	
 
 }
 

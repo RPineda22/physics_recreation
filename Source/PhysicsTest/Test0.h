@@ -29,6 +29,55 @@ public:
 	// Using a default value for now
 	UPROPERTY(EditAnywhere, Category = "Custom Physics")
 		float mass;
+
+	// Array of all vectors during acceleration
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		TArray<FVector>all_locations;
+
+	// This is to indicate the engine to start rendering the location of the actor
+	UPROPERTY(VisibleAnywhere)
+		bool array_finished;
+
+	// This is to keep track of the position in the array of vectors
+	UPROPERTY(VisibleAnywhere)
+		int index;
+
+	// Frame rate used in calculations for substeps and length of array
+	UPROPERTY(EditAnywhere, Category = "Rendering")
+		float fps;
+
+	// Variable used to know whether the frame rate has been set. Initialized to false. Once is true, it will no longer be called every tick.
+	UPROPERTY(EditAnywhere)
+		bool is_fps_set = false;
+
+
+
+	/*
+		Sets the number of frames per second.
+		@param frames per second as int.
+		@return none.
+	*/
+	UFUNCTION(BlueprintCallable)
+		void setFPS(float _fps);
+
+	/*
+		Returns the number of frames per second.
+		@param none.
+		@return Frames per second (int).
+	*/
+	UFUNCTION(BlueprintCallable)
+		float getFPS();
+
+	/*
+		Used as a control measure to set the fps value during tick. Sets it true.
+		@param none.
+		@return none.
+	*/
+	UFUNCTION(BlueprintCallable)
+		void change_is_fps_set();
+
+
+	
 	/*
 		Returns the number of substeps of a given length within n seconds.
 		@param seconds.
@@ -61,6 +110,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 		TArray<FVector> setAccelerationOverTime(float _acceleration, float _seconds);
 
+	/*
+		Sets an array of vectors that represents acceleration and velocity at each substep of specified time.
+		@param acceleration in cm/s^2, time in seconds.
+		@returns none.
+	*/
+
+		
 
 protected:
 	// Called when the game starts or when spawned
