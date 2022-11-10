@@ -34,9 +34,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		TArray<FVector>all_locations;
 
-	// This is to indicate the engine to start rendering the location of the actor
-	UPROPERTY(VisibleAnywhere)
-		bool array_finished;
+
 
 	// This is to keep track of the position in the array of vectors
 	UPROPERTY(VisibleAnywhere)
@@ -46,11 +44,20 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Rendering")
 		float fps;
 
-	// Variable used to know whether the frame rate has been set. Initialized to false. Once is true, it will no longer be called every tick.
-	UPROPERTY(EditAnywhere)
-		bool is_fps_set = false;
 
+	// This indicates how long is initial acceleration going to be applied in seconds
+	UPROPERTY(EditAnywhere, Category = "Custom Physics")
+		float accelerationDuration;
 
+	UPROPERTY(EditAnywhere, Category = "Custom Physics")
+		float acceleration;
+
+	
+	UPROPERTY()
+		int numOfStepsToCalculate;
+
+	UPROPERTY()
+		int stageOfProgram;
 
 	/*
 		Sets the number of frames per second.
@@ -60,6 +67,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void setFPS(float _fps);
 
+
 	/*
 		Returns the number of frames per second.
 		@param none.
@@ -67,16 +75,6 @@ public:
 	*/
 	UFUNCTION(BlueprintCallable)
 		float getFPS();
-
-	/*
-		Used as a control measure to set the fps value during tick. Sets it true.
-		@param none.
-		@return none.
-	*/
-	UFUNCTION(BlueprintCallable)
-		void change_is_fps_set();
-
-
 	
 	/*
 		Returns the number of substeps of a given length within n seconds.
@@ -108,7 +106,7 @@ public:
 		@returns none.
 	*/
 	UFUNCTION(BlueprintCallable)
-		TArray<FVector> setAccelerationOverTime(float _acceleration, float _seconds);
+		TArray<FVector> setAccelerationOverTime(float _acceleration, float _seconds, float substep_length);
 
 	/*
 		Sets an array of vectors that represents acceleration and velocity at each substep of specified time.
