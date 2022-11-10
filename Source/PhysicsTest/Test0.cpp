@@ -123,9 +123,9 @@ TArray<FVector> ATest0::setAccelerationOverTime(float _acceleration, float _seco
 		myArray.Add(newLocation);
 
 
-		UE_LOG(LogTemp, Warning, TEXT("After applying acceleration, X: %f"), new_x);
-		UE_LOG(LogTemp, Warning, TEXT("After applying acceleration, y: %f"), new_y);
-		UE_LOG(LogTemp, Warning, TEXT("After applying acceleration, z: %f"), new_z);
+		//UE_LOG(LogTemp, Warning, TEXT("After applying acceleration, X: %f"), new_x);
+		//UE_LOG(LogTemp, Warning, TEXT("After applying acceleration, y: %f"), new_y);
+		//UE_LOG(LogTemp, Warning, TEXT("After applying acceleration, z: %f"), new_z);
 
 
 		n += substep_length;
@@ -174,8 +174,32 @@ void ATest0::Tick(float DeltaTime)
 	
 		UE_LOG(LogTemp, Warning, TEXT("Number of substeps: %d "), numOfStepsToCalculate);
 
-
+		accelerationDuration = 86400;
 		all_locations = setAccelerationOverTime(acceleration, accelerationDuration, substep_length);
+		TArray<FVector> all_locations1 = setAccelerationOverTime(acceleration, accelerationDuration, substep_length);
+		TArray<FVector> all_locations2 = setAccelerationOverTime(acceleration, accelerationDuration, substep_length);
+		TArray<FVector> all_locations3 = setAccelerationOverTime(acceleration, accelerationDuration, substep_length);
+		TArray<FVector> all_locations4 = setAccelerationOverTime(acceleration, accelerationDuration, substep_length);
+		TArray<FVector> all_locations5 = setAccelerationOverTime(acceleration, accelerationDuration, substep_length);
+		TArray<FVector> all_locations6 = setAccelerationOverTime(acceleration, accelerationDuration, substep_length);
+		TArray<FVector> all_locations7 = setAccelerationOverTime(acceleration, accelerationDuration, substep_length);
+		TArray<FVector> all_locations8 = setAccelerationOverTime(acceleration, accelerationDuration, substep_length);
+		TArray<FVector> all_locations9 = setAccelerationOverTime(acceleration, accelerationDuration, substep_length);
+		TArray<FVector> all_locations10 = setAccelerationOverTime(acceleration, accelerationDuration, substep_length);
+		TArray<FVector> all_locations11 = setAccelerationOverTime(acceleration, accelerationDuration, substep_length);
+		TArray<FVector> all_locations12 = setAccelerationOverTime(acceleration, accelerationDuration, substep_length);
+		TArray<FVector> all_locations13 = setAccelerationOverTime(acceleration, accelerationDuration, substep_length);
+		TArray<FVector> all_locations14 = setAccelerationOverTime(acceleration, accelerationDuration, substep_length);
+		TArray<FVector> all_locations15 = setAccelerationOverTime(acceleration, accelerationDuration, substep_length);
+		TArray<FVector> all_locations16 = setAccelerationOverTime(acceleration, accelerationDuration, substep_length);
+		TArray<FVector> all_locations17 = setAccelerationOverTime(acceleration, accelerationDuration, substep_length);
+		TArray<FVector> all_locations18 = setAccelerationOverTime(acceleration, accelerationDuration, substep_length);
+		TArray<FVector> all_locations19 = setAccelerationOverTime(acceleration, accelerationDuration, substep_length);
+		TArray<FVector> all_locations20 = setAccelerationOverTime(acceleration, accelerationDuration, substep_length);
+		TArray<FVector> all_locations21 = setAccelerationOverTime(acceleration, accelerationDuration, substep_length);
+		TArray<FVector> all_locations22 = setAccelerationOverTime(acceleration, accelerationDuration, substep_length);
+		TArray<FVector> all_locations23 = setAccelerationOverTime(acceleration, accelerationDuration, substep_length);
+
 
 		stageOfProgram = 2;
 
