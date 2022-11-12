@@ -27,7 +27,7 @@ ATest0::ATest0()
 	accelerationDuration = 4.0;
 
 	index = 0;
-	stageOfProgram = 1;
+	stageOfProgram;
 }
 
 void ATest0::setFPS(float _fps)
@@ -85,6 +85,8 @@ float ATest0::calculateAcceleration(float _mass, float _force)
 	@param acceleration in cm/s^2, time in seconds.
 	@returns none.
 */
+
+
 TArray<FVector> ATest0::setAccelerationOverTime(float _acceleration, float _seconds, float substep_length)
 {
 	// Calculate the length of our array (how many substeps we need)
@@ -136,6 +138,19 @@ TArray<FVector> ATest0::setAccelerationOverTime(float _acceleration, float _seco
 
 }
 
+void ATest0::enableSecondStageOfProgram()
+{
+	stageOfProgram = 2;
+}
+
+void ATest0::enableFirstStageOfProgram()
+{
+	stageOfProgram = 1;
+	GetWorld()->GetTimerManager().ClearTimer(DeployDelayTimerHandle);
+	
+	GetWorld()->GetTimerManager().SetTimer(DeployDelayTimerHandle2, this, &ATest0::enableSecondStageOfProgram, .001f, false);
+}
+
 // Called when the game starts or when spawned
 void ATest0::BeginPlay()
 {
@@ -151,8 +166,9 @@ void ATest0::BeginPlay()
 void ATest0::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+	GetWorld()->GetTimerManager().SetTimer(DeployDelayTimerHandle, this, &ATest0::enableFirstStageOfProgram, 5.0f, false);
 
+	UE_LOG(LogTemp, Warning, TEXT("After applying acceleration, z: %f"), GetWorld()->GetTimerManager().GetTimerRemaining(DeployDelayTimerHandle));
 	// getting array of acceleration over time
 	if (stageOfProgram == 1) 
 	{
@@ -167,24 +183,14 @@ void ATest0::Tick(float DeltaTime)
 
 		setFPS(new_fps);
 	
-
-
-
 		numOfStepsToCalculate = getSubsteps(accelerationDuration);
 	
 		UE_LOG(LogTemp, Warning, TEXT("Number of substeps: %d "), numOfStepsToCalculate);
 
-
 		all_locations = setAccelerationOverTime(acceleration, accelerationDuration, substep_length);
-
-		stageOfProgram = 2;
 
 		UE_LOG(LogTemp, Warning, TEXT("FPS: %d /s"), new_fps);
 	}
-
-
-
-	
 
 	if (stageOfProgram == 2 && index < all_locations.Num())
 	{

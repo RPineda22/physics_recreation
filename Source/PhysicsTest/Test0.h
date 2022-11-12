@@ -114,6 +114,17 @@ public:
 		@returns none.
 	*/
 
+	FTimerHandle DeployDelayTimerHandle;
+
+
+	FTimerHandle DeployDelayTimerHandle2s;
+
+	UFUNCTION(BlueprintCallable)
+		void enableSecondStageOfProgram();
+
+	UFUNCTION(BlueprintCallable)
+		void enableFirstStageOfProgram();
+
 		
 
 protected:
